@@ -28,7 +28,7 @@ export type ContractAddresses = {
   dataStore: string
   /** OrderVault — holds collateral between order creation and execution */
   orderVault: string
-  /** StakingRouter — stake/unstake SO4 + esSO4, claim rewards */
+
   stakingRouter: string
   /** GlvRouter — GLV vault deposits and withdrawals */
   glvRouter: string
