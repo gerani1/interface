@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { queryKeys } from "../lib/query-keys"
-import { SyntheticsReaderClient } from "@/lib/contracts/synthetics-reader"
+import { syntheticsReaderClient } from "@/lib/contracts"
 
 const FUNDING_INTERVAL_MS = 8 * 60 * 60 * 1000 // 8-hour epochs
 const CHAIN_ID = "stellar-mainnet"
@@ -24,7 +24,7 @@ async function fetchFundingRate(marketAddress: string): Promise<FundingRateInfo>
     return { ratePerHour: 0, nextEpochTs: computeNextEpoch() }
   }
 
-  const reader = new SyntheticsReaderClient()
+  const reader = syntheticsReaderClient
   const info = await reader.getFundingInfo(marketAddress)
 
   // funding_factor_per_second is in 30-decimal precision.

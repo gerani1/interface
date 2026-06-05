@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { queryKeys } from "../lib/query-keys"
 import { useMarkets } from "./useMarkets"
 import type { Market } from "./useMarkets"
-import { SyntheticsReaderClient } from "@/lib/contracts/synthetics-reader"
+import { syntheticsReaderClient } from "@/lib/contracts"
 import { fromSorobanAmount } from "@/shared/lib/bignum"
 
 export type MarketInfo = Market & {
@@ -30,7 +30,7 @@ function isSorobanAddress(addr: string): boolean {
 async function fetchMarketsInfo(markets: Array<Market>): Promise<Array<MarketInfo>> {
   if (markets.length === 0) return []
 
-  const reader = new SyntheticsReaderClient()
+  const reader = syntheticsReaderClient
 
   const results = await Promise.allSettled(
     markets.map(async (m): Promise<MarketInfo> => {

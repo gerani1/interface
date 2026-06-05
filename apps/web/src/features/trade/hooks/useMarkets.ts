@@ -3,11 +3,11 @@ import { useMemo } from "react"
 import { MARKETS } from "../data/markets"
 import type { Market } from "../data/markets"
 import { useTokenList } from "./useTokenList"
-import { SyntheticsReaderClient } from "@/lib/contracts/synthetics-reader"
+import { syntheticsReaderClient } from "@/lib/contracts"
 import { queryKeys } from "../lib/query-keys"
 
 async function fetchMarkets(): Promise<Array<Market>> {
-  const client = new SyntheticsReaderClient()
+  const client = syntheticsReaderClient
   const results = await Promise.allSettled(
     MARKETS.map(async (market) => {
       const info = await client.getMarketInfo(market.address)
