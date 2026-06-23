@@ -1,11 +1,11 @@
-import { parseSorobanError, GlvRouterClient } from "@workspace/contracts"
+import { TransactionBuilder } from "@stellar/stellar-sdk"
+import type { Transaction } from "@stellar/stellar-sdk"
+import { GlvRouterClient, parseSorobanError } from "@workspace/contracts"
 import type {
   GlvCreateDepositParams as GeneratedCreateDepositParams,
   GlvCreateWithdrawalParams as GeneratedCreateWithdrawalParams,
   GlvInfo,
 } from "@workspace/contracts"
-import { TransactionBuilder } from "@stellar/stellar-sdk"
-import type { Transaction } from "@stellar/stellar-sdk"
 
 import { prepareAndSign } from "@/lib/soroban/tx-builder"
 import { queryClient } from "@/app/providers/QueryProvider"

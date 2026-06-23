@@ -190,7 +190,7 @@ export function useTradeState() {
   const setToTokenAddress = useCallback(
     (address: string) => {
       const marketsList = getMarketsForIndexToken(address)
-      const market = marketsList[0]!
+      const market = marketsList[0]
       const marketAddress = market.address
 
       const collaterals = { ...state.collaterals }
