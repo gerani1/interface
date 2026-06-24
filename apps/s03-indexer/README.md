@@ -143,6 +143,25 @@ bun run indexer:build
 The repository uses the root Bun lockfile only. Do not add `package-lock.json`,
 `yarn.lock`, or `pnpm-lock.yaml` files.
 
+## Event Entity IDs
+
+SO4 event mappings use deterministic IDs so replaying a ledger updates the same
+rows instead of duplicating data. IDs are namespaced by entity and stable
+protocol keys where the event exposes them:
+
+- `market:<market-key-or-market-token>`
+- `deposit:<deposit-key>`
+- `withdrawal:<withdrawal-key>`
+- `order:<order-key>`
+- `position:<position-key>`
+- `liquidation:<liquidation-key>`
+- `adl:<adl-key>`
+- `token-event:<subquery-event-id>`
+
+Immutable event records that do not have a protocol key use the SubQuery event
+ID inside a namespace, for example `position-change:<event-id>` and
+`market-config:<event-id>`. Unknown or malformed events are logged and skipped.
+
 ## Useful Query
 
 After the stack is running, try this query in the GraphQL playground:
