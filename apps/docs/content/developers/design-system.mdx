@@ -47,7 +47,7 @@ An opacity modifier on `text-foreground` and one of these roles can look identic
 
 ## One theme, so far {#one-theme-so-far}
 
-`surface-*` and `text-primary`/`text-secondary`/`text-tertiary`/`text-inverse`/`text-link` are defined in `.dark` but **not** in `:root` — [Design tokens](/reference/tokens.generated) shows this directly: those rows have a real swatch in the dark column and a dashed one in the light column. This isn't an oversight to route around; it's the current state of a still-in-progress light/dark migration, recorded in [`DESIGN.md`](https://github.com/SO4-Markets/interface/blob/main/DESIGN.md#dark-theme-gf3-001): the surface/text roles arrived with the GF3 dark theme, and light mode still reads from the older `--background`/`--foreground`/`--card`/`--popover` shadcn aliases, which *are* defined in both themes. Use the surface/text roles regardless — they resolve correctly in dark mode today and are where light mode is headed, not a token you should avoid.
+`surface-*` and `text-*` (`primary`, `secondary`, `tertiary`, `disabled`, `inverse`, `link`) are defined in both `:root` and `.dark`, so the utilities resolve in either theme. In light mode the status colours (`success`, `warning`, `liquidation`) are darkened to clear 4.5:1 on white, and the `*-subtle` / `*-border` tints are light fills; `.dark` restores the brighter values and the dark-tuned tints. The `--chart-*` tokens follow the same split, and the sRGB fallbacks in `chart-theme.ts` mirror them. Use the surface/text roles rather than the older `--background`/`--foreground`/`--card`/`--popover` aliases in new code.
 
 ## Trading-state and semantic colors
 

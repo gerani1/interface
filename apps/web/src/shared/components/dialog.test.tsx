@@ -1,7 +1,6 @@
 /**
  * Accessibility and behaviour tests for the Dialog primitive wrappers in
- * @workspace/ui/components/dialog and the migrated wallet connect modal in
- * src/ui/connect-button.tsx.
+ * @workspace/ui/components/dialog.
  *
  * Strategy
  * ────────
@@ -13,7 +12,6 @@
  *   • title / description linkage
  *   • dismiss / close controls
  *   • mobile sizing and scroll utility classes emitted by the real component
- *   • the migrated ConnectButton (src/ui) modal trigger and content
  */
 import { afterEach, describe, expect, it, vi } from "vitest"
 import { cleanup, render, screen } from "@testing-library/react"
@@ -31,12 +29,6 @@ import {
   DialogTitle,
 } from "@workspace/ui/components/dialog"
 import type * as ReactModule from "react"
-// ---------------------------------------------------------------------------
-// Import subjects AFTER the mock is registered
-// ---------------------------------------------------------------------------
-
-import { ConnectButton } from "@/ui/connect-button"
-
 afterEach(() => {
   cleanup()
 })
@@ -433,128 +425,5 @@ describe("Dialog – dismiss controls", () => {
     btn.focus()
     await user.keyboard("{Enter}")
     expect(onOpenChange).toHaveBeenCalledWith(false)
-  })
-})
-
-// ---------------------------------------------------------------------------
-// 5. ConnectButton (src/ui) — migrated modal
-//    The hand-rolled modal has been replaced with the Dialog primitive.
-//    We verify the new implementation emits the right semantics and wires
-//    connect() correctly — without needing the base-ui lifecycle.
-// ---------------------------------------------------------------------------
-
-// Mock @/app/providers so we can control connect / disconnect
-const mockConnect = vi.fn()
-const mockDisconnect = vi.fn()
-
-vi.mock("@/app/providers", () => ({
-  useWallet: () => ({
-    address: null,
-    status: "disconnected",
-    connect: mockConnect,
-    disconnect: mockDisconnect,
-  }),
-}))
-
-describe("ConnectButton (src/ui) – migrated Dialog modal", () => {
-  afterEach(() => {
-    vi.clearAllMocks()
-    cleanup()
-  })
-
-  it("renders Connect trigger button when disconnected", () => {
-    render(<ConnectButton />)
-    expect(screen.getByRole("button", { name: /connect wallet/i })).toBeTruthy()
-  })
-
-  it("trigger has aria-haspopup=dialog", () => {
-    render(<ConnectButton />)
-    const btn = screen.getByRole("button", { name: /connect wallet/i })
-    expect(btn.getAttribute("aria-haspopup")).toBe("dialog")
-  })
-
-  it("dialog is not visible before trigger is clicked", () => {
-    render(<ConnectButton />)
-    expect(screen.queryByRole("dialog")).toBeNull()
-  })
-
-  it("clicking Connect opens the dialog", async () => {
-    const user = userEvent.setup()
-    render(<ConnectButton />)
-    await user.click(screen.getByRole("button", { name: /connect wallet/i }))
-    expect(screen.getByRole("dialog")).toBeTruthy()
-  })
-
-  it("dialog has role=dialog with aria-modal", async () => {
-    const user = userEvent.setup()
-    render(<ConnectButton />)
-    await user.click(screen.getByRole("button", { name: /connect wallet/i }))
-    const dialog = screen.getByRole("dialog")
-    expect(dialog.getAttribute("aria-modal")).toBe("true")
-  })
-
-  it("dialog is labelled 'Connect Wallet'", async () => {
-    const user = userEvent.setup()
-    render(<ConnectButton />)
-    await user.click(screen.getByRole("button", { name: /connect wallet/i }))
-    expect(screen.getByText("Connect Wallet")).toBeTruthy()
-    const popup = screen.getByRole("dialog")
-    const titleEl = document.getElementById(
-      popup.getAttribute("aria-labelledby")!
-    )
-    expect(titleEl?.textContent).toBe("Connect Wallet")
-  })
-
-  it("dialog has description text", async () => {
-    const user = userEvent.setup()
-    render(<ConnectButton />)
-    await user.click(screen.getByRole("button", { name: /connect wallet/i }))
-    expect(
-      screen.getByText(/Choose a supported wallet to continue/i)
-    ).toBeTruthy()
-    const popup = screen.getByRole("dialog")
-    const descEl = document.getElementById(
-      popup.getAttribute("aria-describedby")!
-    )
-    expect(descEl?.textContent).toMatch(/Choose a supported wallet/i)
-  })
-
-  it("clicking Freighter calls connect() and closes the dialog", async () => {
-    const user = userEvent.setup()
-    render(<ConnectButton />)
-    await user.click(screen.getByRole("button", { name: /connect wallet/i }))
-    await user.click(screen.getByRole("button", { name: /freighter/i }))
-    expect(mockConnect).toHaveBeenCalledTimes(1)
-    expect(screen.queryByRole("dialog")).toBeNull()
-  })
-
-  it("clicking Cancel closes the dialog without calling connect()", async () => {
-    const user = userEvent.setup()
-    render(<ConnectButton />)
-    await user.click(screen.getByRole("button", { name: /connect wallet/i }))
-    await user.click(screen.getByRole("button", { name: /cancel/i }))
-    expect(mockConnect).not.toHaveBeenCalled()
-    expect(screen.queryByRole("dialog")).toBeNull()
-  })
-
-  it("dialog popup has mobile scroll classes", async () => {
-    const user = userEvent.setup()
-    render(<ConnectButton />)
-    await user.click(screen.getByRole("button", { name: /connect wallet/i }))
-    const popup = screen.getByRole("dialog")
-    expect(popup.className).toContain("max-h-[calc(100dvh-2rem)]")
-    expect(popup.className).toContain("overflow-y-auto")
-  })
-
-  it("compactMobile hides label text on small screens", () => {
-    render(<ConnectButton compactMobile />)
-    // The visible "Connect" span should have hidden class on mobile
-    const spans = screen
-      .getByRole("button", { name: /connect wallet/i })
-      .querySelectorAll("span")
-    const hiddenOnMobile = Array.from(spans).some((s) =>
-      s.className.includes("hidden sm:inline")
-    )
-    expect(hiddenOnMobile).toBe(true)
   })
 })

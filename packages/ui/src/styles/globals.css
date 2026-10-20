@@ -507,10 +507,10 @@
 
     /* Semantic status roles — shared by badges, alerts, numeric text and the
        trading chart so a "long" candle is the same green as a positive PnL. */
-    --success: oklch(0.596 0.145 163.225);
+    --success: oklch(0.52 0.13 163.225);
     --success-foreground: oklch(0.985 0 0);
-    --warning: oklch(0.681 0.162 75.834);
-    --warning-foreground: oklch(0.21 0 0);
+    --warning: oklch(0.55 0.14 70);
+    --warning-foreground: oklch(0.985 0 0);
     --info: oklch(0.546 0.245 262.881);
     --info-foreground: oklch(0.985 0 0);
     --neutral: oklch(0.556 0 0);
@@ -519,32 +519,47 @@
     --short: var(--destructive);
 
     --long-foreground: var(--success-foreground);
-    --long-subtle: oklch(0.18 0.05 163.225);
-    --long-border: oklch(0.35 0.10 163.225);
+    --long-subtle: oklch(0.96 0.03 163.225);
+    --long-border: oklch(0.85 0.08 163.225);
     --short-foreground: var(--destructive-foreground);
-    --short-subtle: oklch(0.18 0.05 27.325);
-    --short-border: oklch(0.35 0.10 27.325);
-    --liquidation: oklch(0.82 0.16 65);
-    --liquidation-foreground: oklch(0.21 0 0);
-    --liquidation-subtle: oklch(0.18 0.05 75.834);
-    --liquidation-border: oklch(0.35 0.10 75.834);
-    --success-subtle: oklch(0.18 0.05 163.225);
-    --success-border: oklch(0.35 0.10 163.225);
-    --warning-subtle: oklch(0.18 0.05 75.834);
-    --warning-border: oklch(0.35 0.10 75.834);
-    --info-subtle: oklch(0.18 0.05 262.881);
-    --info-border: oklch(0.35 0.10 262.881);
-    --danger-subtle: oklch(0.18 0.05 27.325);
-    --danger-border: oklch(0.35 0.10 27.325);
-    --neutral-subtle: oklch(0.20 0 0);
-    --neutral-border: oklch(0.32 0 0);
+    --short-subtle: oklch(0.96 0.03 27.325);
+    --short-border: oklch(0.86 0.08 27.325);
+    --liquidation: oklch(0.55 0.15 55);
+    --liquidation-foreground: oklch(0.985 0 0);
+    --liquidation-subtle: oklch(0.96 0.04 75.834);
+    --liquidation-border: oklch(0.86 0.09 75.834);
+    --success-subtle: oklch(0.96 0.03 163.225);
+    --success-border: oklch(0.85 0.08 163.225);
+    --warning-subtle: oklch(0.96 0.04 75.834);
+    --warning-border: oklch(0.86 0.09 75.834);
+    --info-subtle: oklch(0.96 0.03 262.881);
+    --info-border: oklch(0.86 0.07 262.881);
+    --danger-subtle: oklch(0.96 0.03 27.325);
+    --danger-border: oklch(0.86 0.08 27.325);
+    --neutral-subtle: oklch(0.97 0 0);
+    --neutral-border: oklch(0.87 0 0);
 
-    --chart-surface: oklch(0.145 0 0);
+    /* Surface and text roles. Light values mirror the .dark set below so
+       `bg-surface-*` / `text-text-*` utilities resolve in both themes. */
+    --surface-canvas: var(--background);
+    --surface-sunken: oklch(0.97 0 0);
+    --surface-raised: oklch(1 0 0);
+    --surface-overlay: oklch(1 0 0);
+    --surface-interactive: oklch(0.955 0 0);
+
+    --text-primary: var(--foreground);
+    --text-secondary: oklch(0.45 0 0);
+    --text-tertiary: oklch(0.556 0 0);
+    --text-disabled: oklch(0.708 0 0);
+    --text-inverse: oklch(1 0 0);
+    --text-link: oklch(0.5 0.2 262);
+
+    --chart-surface: var(--background);
     --chart-text: var(--muted-foreground);
-    --chart-grid: oklch(0.269 0 0);
-    --chart-crosshair: oklch(0.44 0 0);
-    --chart-crosshair-label: oklch(0.269 0 0);
-    --chart-border: oklch(0.269 0 0);
+    --chart-grid: oklch(0.922 0 0);
+    --chart-crosshair: oklch(0.708 0 0);
+    --chart-crosshair-label: oklch(0.97 0 0);
+    --chart-border: oklch(0.922 0 0);
     --chart-up: var(--long);
     --chart-down: var(--short);
     --chart-liquidation: var(--warning);
@@ -565,12 +580,12 @@
  * Re-introduces `.dark` (previously absent, so dark mode fell back to the
  * light values above). Surfaces, text roles, border, primary/ring, and accent
  * are sourced straight from the GMX reference palette per the mapping table
- * in docs/gf_3/001_theme_update.md §8.2 — trading-state foreground colors
+ * in docs/gf_3/001_theme_update.md §8.2 — trading-state colors
  * (long/short/liquidation/success/warning/danger/neutral) are intentionally
- * NOT GMX concepts and are left untouched, inherited from :root. Only their
- * `subtle`/`border` fill pairs are re-lightened here so a badge still reads
- * as a distinct tint against the new slate-800/900 surfaces instead of
- * blending into them (the :root pairs were tuned for a white canvas).
+ * NOT GMX concepts. The :root values are darkened for contrast on white, so
+ * the bright success/warning/liquidation values are restored here, and the
+ * `subtle`/`border` fill pairs are re-lightened so a badge still reads as a
+ * distinct tint against the slate-800/900 surfaces.
  */
 .dark {
     --background: var(--color-gmx-slate-900);
@@ -592,6 +607,20 @@
     --input: var(--color-gmx-stroke-primary);
     --ring: oklch(0.72 0.18 190);
 
+    /* The light-theme status colours are darkened to reach 4.5:1 on white.
+       Restore the brighter values on dark surfaces, and re-declare every
+       alias so it resolves against them (var() is resolved where declared). */
+    --success: oklch(0.596 0.145 163.225);
+    --warning: oklch(0.681 0.162 75.834);
+    --warning-foreground: oklch(0.21 0 0);
+    --liquidation: oklch(0.82 0.16 65);
+    --liquidation-foreground: oklch(0.21 0 0);
+    --long: var(--success);
+    --chart-1: var(--long);
+    --chart-3: var(--liquidation);
+    --chart-up: var(--long);
+    --chart-liquidation: var(--warning);
+
     --surface-canvas: var(--color-gmx-slate-900);
     --surface-sunken: var(--color-gmx-slate-950);
     --surface-raised: var(--color-gmx-slate-800);
@@ -601,6 +630,7 @@
     --text-primary: oklch(1 0 0);
     --text-secondary: var(--color-gmx-slate-400);
     --text-tertiary: var(--color-gmx-slate-500);
+    --text-disabled: oklch(0.5 0.03 281);
     --text-inverse: oklch(1 0 0);
     --text-link: oklch(0.78 0.15 190);
 
